@@ -1,5 +1,6 @@
 package com.example.android.politicalpreparedness.database
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.politicalpreparedness.network.CivicsApi
@@ -15,6 +16,7 @@ class ElectionsRepository(val database: ElectionDatabase) {
         withContext(Dispatchers.IO) {
             val electionResponse = CivicsApi.retrofitService.getElections()
             upcomingElections.postValue(electionResponse.elections)
+            Log.i("election, repository", electionResponse.toString())
         }
     }
 }
