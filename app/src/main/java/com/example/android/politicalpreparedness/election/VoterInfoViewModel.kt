@@ -9,7 +9,7 @@ import com.example.android.politicalpreparedness.database.ElectionDao
 import com.example.android.politicalpreparedness.network.models.Election
 import kotlinx.coroutines.launch
 
-class VoterInfoViewModel( private val repository: VoterInfoRepository, val election_id: Int) : ViewModel() {
+class VoterInfoViewModel( private val repository: VoterInfoRepository, val election: Election) : ViewModel() {
 
     //TODO: Add live data to hold voter info
     val state = repository.state
@@ -38,13 +38,29 @@ class VoterInfoViewModel( private val repository: VoterInfoRepository, val elect
         viewModelScope.launch {
             try {
                 val dummyAddress = "Modesto"
-                repository.refreshVoterInfo(dummyAddress, election_id)
-                repository.getElectionById(election_id)
+                repository.refreshVoterInfo(dummyAddress, election.id)
+                repository.getElectionById(election.id)
             } catch (e: Exception) {
                 // TODO show toast
                 Log.e("voter info fragment view model","getVoterInfo.exception: ${e.localizedMessage}")
             }
         }
+    }
+
+    fun openBallotInfoUrl() {
+        _ballotInfoUrl.value = state.value?.electionAdministrationBody?.ballotInfoUrl
+    }
+
+    fun openBallotInfoUrlDone() {
+        _ballotInfoUrl.value = null
+    }
+
+    fun openVotingLocationFinderUrl() {
+        _votingLocationFinderUrl.value = state.value?.electionAdministrationBody?.votingLocationFinderUrl
+    }
+
+    fun openVotingLocationFinderUrlDone() {
+        _votingLocationFinderUrl.value = null
     }
 
     //TODO: Add var and methods to save and remove elections to local database
@@ -56,5 +72,19 @@ class VoterInfoViewModel( private val repository: VoterInfoRepository, val elect
     fun openElectionInfoUrlDone() {
         _electionInfoUrl.value = null
     }
+    fun openElectionInfoUrl() {
+        _electionInfoUrl.value = state.value?.electionAdministrationBody?.electionInfoUrl
+    }
 
+    fun savingButton() {
+        viewModelScope.launch {
+            if (savedElection.value == null) {
+                repository.saveElection(election)
+                savedElection.value = election
+            } else {
+                repository.deleteElection(election)
+                savedElection.value = null
+            }
+        }
+    }
 }

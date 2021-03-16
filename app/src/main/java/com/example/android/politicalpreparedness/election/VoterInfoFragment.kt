@@ -3,6 +3,7 @@ package com.example.android.politicalpreparedness.election
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -19,12 +20,12 @@ class VoterInfoFragment : Fragment() {
 
         //TODO: Add ViewModel values and create ViewModel
         val args = navArgs<VoterInfoFragmentArgs>()
-        val election_id = args.value.argElectionId
+        val election = args.value.argElection
 
         val database = ElectionDatabase.getInstance(requireActivity().application)
         val repository = VoterInfoRepository(database)
 
-        val viewModelFactory = VoterInfoViewModelFactory(repository, election_id)
+        val viewModelFactory = VoterInfoViewModelFactory(repository, election)
         val viewModel = ViewModelProvider(this, viewModelFactory).get(VoterInfoViewModel::class.java)
 
         //TODO: Add binding values
@@ -44,6 +45,20 @@ class VoterInfoFragment : Fragment() {
         })
 
         //TODO: Handle loading of URLs
+        viewModel.ballotInfoUrl.observe(viewLifecycleOwner, Observer { urlStr ->
+            urlStr?.let {
+                startActivityWithUrlIntentUsing(urlStr)
+                viewModel.openBallotInfoUrlDone()
+            }
+        })
+
+        viewModel.votingLocationFinderUrl.observe(viewLifecycleOwner, Observer { urlStr ->
+            urlStr?.let {
+
+                startActivityWithUrlIntentUsing(urlStr)
+                viewModel.openVotingLocationFinderUrlDone()
+            }
+        })
 
         //TODO: Handle save button UI state
         //TODO: cont'd Handle save button clicks
@@ -53,6 +68,7 @@ class VoterInfoFragment : Fragment() {
 
     //TODO: Create method to load URL intents
     private fun startActivityWithUrlIntentUsing(urlStr: String) {
+        Log.i("intent starting", urlStr)
         val uri: Uri = Uri.parse(urlStr)
         val intent = Intent(Intent.ACTION_VIEW, uri)
         startActivity(intent)

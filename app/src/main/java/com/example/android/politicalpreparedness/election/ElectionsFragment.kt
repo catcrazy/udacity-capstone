@@ -54,6 +54,13 @@ class ElectionsFragment: Fragment() {
             }
         })
 
+        viewModel.navigateToVoterInfo.observe(viewLifecycleOwner, Observer { election ->
+            election?.let {
+                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(election, election.division))
+                viewModel.navigateToVoterInfoSaved()
+            }
+        })
+
         return binding.root
     }
 

@@ -24,7 +24,7 @@ class RepresentativeViewModel: ViewModel() {
         get() = _address
 
     init {
-        _address.value = Address("","","","","")
+        _address.value = Address("California","","","","")
     }
 
     /**

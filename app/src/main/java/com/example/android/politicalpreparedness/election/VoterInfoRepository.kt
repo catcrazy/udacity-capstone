@@ -12,12 +12,12 @@ class VoterInfoRepository(private val database: ElectionDatabase) {
     val state = MutableLiveData<State>()
     val savedElection = MutableLiveData<Election>()
 
-    suspend fun refreshVoterInfo(address: String, election_id: Int) {
+    suspend fun refreshVoterInfo(address: String, electionId: Int) {
         // TODO update by commenting out
-//        withContext(Dispatchers.IO) {
-//            val voterResponse = CivicsApi.retrofitService.getVoterInfo(address, electionId)
-//            state.postValue(voterResponse.state?.get(0))
-//        }
+        withContext(Dispatchers.IO) {
+            val voterResponse = CivicsApi.retrofitService.getVoterInfo(address, electionId)
+            state.postValue(voterResponse.state?.get(0))
+        }
     }
 
     suspend fun getElectionById(election_id: Int) {
