@@ -62,6 +62,17 @@ class VoterInfoFragment : Fragment() {
 
         //TODO: Handle save button UI state
         //TODO: cont'd Handle save button clicks
+        viewModel.savedElection.observe(viewLifecycleOwner, Observer {
+            binding.saveElectionButton.visibility = View.VISIBLE
+            when (it == null) {
+                true -> {
+                    binding.saveElectionButton.text = "Save election"
+                }
+                false -> {
+                    binding.saveElectionButton.text = "Unsave election"
+                }
+            }
+        })
 
         return binding.root
     }
